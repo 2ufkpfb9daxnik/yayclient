@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,16 +10,27 @@
 <body>
     <header class="header">
         <div class="container">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 1rem;">
                 <h1>YayClient</h1>
-                {% if email %}
-                    <div class="user-info">
-                        <span>{{ email }}</span>
-                        <a href="/logout" class="post-button">ログアウト</a>
+                <form class="search-form" action="https://yay.space/search/posts" method="GET" target="_blank">
+                    <div class="search-input-wrapper">
+                        <i class="bi bi-search"></i>
+                        <input type="search" name="keyword" placeholder="検索..." required>
                     </div>
-                {% else %}
-                    <a href="/login" class="post-button">ログイン</a>
-                {% endif %}
+                </form>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <button class="theme-toggle" id="theme-toggle" title="テーマ切り替え">
+                        <i class="bi bi-sun-fill" id="theme-icon"></i>
+                    </button>
+                    {% if email %}
+                        <div class="user-info">
+                            <span>{{ email }}</span>
+                            <a href="/logout" class="post-button">ログアウト</a>
+                        </div>
+                    {% else %}
+                        <a href="/login" class="post-button">ログイン</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </header>
@@ -88,6 +99,43 @@
     </main>
 
     <script>
+        // リンクとハッシュタグの検出用の正規表現
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const hashtagRegex = /#(\w+)/g;
+
+        function processText(text) {
+            // URLをリンクに変換
+            text = text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
+            
+            // ハッシュタグをリンクに変換
+            text = text.replace(hashtagRegex, '<a href="https://yay.space/timeline/hashtag/$1" target="_blank">#$1</a>');
+            
+            return text;
+        }
+
+        // テーマ切り替え
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const html = document.documentElement;
+        
+        // ローカルストレージからテーマを読み込む
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            themeIcon.className = theme === 'light' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+        }
+
         let pollInterval = 60;
         let pollTimer = null;
         let currentTimeline = 'open';
@@ -114,7 +162,7 @@
                         <span class="timestamp">${post.timestamp}</span>
                     </div>
                 </div>
-                <div class="post-content">${post.text}</div>
+                <div class="post-content">${processText(post.text)}</div>
                 <div class="post-stats">
                     <div class="stat">
                         <i class="bi bi-heart-fill"></i>
