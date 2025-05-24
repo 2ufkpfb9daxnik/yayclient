@@ -28,3 +28,7 @@ python build.py
 - `Ctrl+Enter`: 投稿
 - 更新間隔: 秒単位での調整可能
 - タイムライン切り替え: オープン/フォロー中
+
+## 開発
+
+[yaylib](https://github.com/ekkx/yaylib)を使わせていただきました
