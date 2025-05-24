@@ -1,0 +1,4 @@
+flask==2.0.1
+werkzeug==2.0.1
+yaylib==1.5.4
+pyinstaller==6.3.0

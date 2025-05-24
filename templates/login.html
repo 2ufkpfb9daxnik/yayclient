@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YayClient - ログイン</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>YayClient</h1>
+        </div>
+    </header>
+
+    <main class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <i class="bi bi-person-circle"></i>
+                <h2>ログイン</h2>
+            </div>
+            
+            <form class="login-form" action="/login" method="POST">
+                <div class="form-group">
+                    <label for="email">メールアドレス</label>
+                    <div class="input-with-icon">
+                        <i class="bi bi-envelope"></i>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">パスワード</label>
+                    <div class="input-with-icon">
+                        <i class="bi bi-lock"></i>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-button">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    ログイン
+                </button>
+            </form>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="flash-error">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="notes">
+                <p>※2段階認証が必要なアカウントでは投稿機能は使用できません</p>
+                <p>※ログインせずに閲覧のみ行うことも可能です</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
